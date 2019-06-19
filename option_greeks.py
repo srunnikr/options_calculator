@@ -22,17 +22,24 @@ class BlackScholesCalculator(object):
         self.Nd2 = norm.cdf(self.d2)
         self.Nd2_negative = norm.cdf(-self.d2)
 
-    def call_option_price(self):
+    def get_call_option_price(self):
         return (self.spot_price * math.exp(-1 * self.annual_dividend_yield * self.days_to_expiry) * self.Nd1 -
                 self.strike_price * math.exp(-1 * self.risk_free_rate * self.days_to_expiry) * self.Nd2)
 
-    def put_option_price(self):
+    def get_put_option_price(self):
         return (self.strike_price * math.exp(-1 * self.risk_free_rate * self.days_to_expiry) * self.Nd2_negative -
                 self.spot_price * math.exp(-1 * self.annual_dividend_yield * self.days_to_expiry) * self.Nd1_negative)
 
+    def get_call_option_greeks(self):
+        call_delta = (self.Nd1 * math.exp(-1 * self.annual_dividend_yield))
+        return call_delta
+
+    def get_put_option_greeks(self):
+        put_delta = (self.Nd1 - 1) * math.exp(-1 * self.annual_dividend_yield)
+        return put_delta
 
 if __name__ == "__main__":
     # params: Spot price, strike price, volatility%, interest rate%, dividend yield annual%, DTE
     bs = BlackScholesCalculator(272.7, 280, 43.55, 7.4769, 0, 1)
-    print "call option price: ", bs.call_option_price()
-    print "put option _price: ", bs.put_option_price()
+    print "call option price: ", bs.get_call_option_price()
+    print "put option _price: ", bs.get_put_option_price()
